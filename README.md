@@ -1,135 +1,281 @@
-# Turborepo starter
+# Liquid SDKs
 
-This Turborepo starter is maintained by the Turborepo core team.
+A comprehensive monorepo containing TypeScript SDKs for all JavaScript environments, built with Turbo Repo.
 
-## Using this example
+## 🚀 SDKs Included
 
-Run the following command:
+### Core Packages
 
-```sh
-npx create-turbo@latest
-```
+- **`@liquid/core`** - Shared utilities, types, and base client
+- **`@liquid/web-sdk`** - Browser/web applications
+- **`@liquid/react-sdk`** - React applications with hooks and components
+- **`@liquid/react-native-sdk`** - React Native and Expo applications
+- **`@liquid/node-sdk`** - Node.js server-side applications
 
-## What's inside?
+### Shared Configurations
 
-This Turborepo includes the following packages/apps:
+- **`@liquid/typescript-config`** - Shared TypeScript configurations
+- **`@liquid/eslint-config`** - Shared ESLint configurations
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 📦 Architecture
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+liquid-sdks/
+├── packages/
+│   ├── core/                 # Base client and shared utilities
+│   ├── web-sdk/             # Browser-specific features
+│   ├── react-sdk/           # React hooks and components
+│   ├── react-native-sdk/    # React Native/Expo features
+│   ├── node-sdk/            # Node.js server-side features
+│   ├── typescript-config/   # Shared TypeScript configs
+│   └── eslint-config/       # Shared ESLint configs
+├── apps/
+│   ├── react-example/       # Next.js + Tailwind CSS example
+│   ├── node-example/        # Node.js CLI example
+│   ├── rn-example/          # React Native/Expo example
+│   └── web-example/         # Vanilla JS/HTML example
+└── turbo.json              # Turbo Repo configuration
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🛠️ Quick Start
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+### Prerequisites
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+- Node.js 18.17.0 or higher
+- npm 8.19.2 or higher
 
-### Develop
+### Installation
 
-To develop all apps and packages, run the following command:
+```bash
+# Clone the repository
+git clone <repository-url>
+cd liquid-sdks
 
-```
-cd my-turborepo
+# Install dependencies
+npm install
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Build all packages
+npm run build
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Development
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# Run all packages in development mode
+npm run dev
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+# Run specific package
+npx turbo dev --filter=@liquid/react-sdk
 
-### Remote Caching
+# Build all packages
+npm run build
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+# Run linting
+npm run lint
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Type checking
+npm run check-types
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## 📚 Usage Examples
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+### React SDK
 
+```tsx
+import {
+  LiquidProvider,
+  useLiquidUser,
+  useLiquidHello,
+} from "@liquid/react-sdk";
+
+function App() {
+  return (
+    <LiquidProvider config={{ apiKey: "your-api-key" }}>
+      <UserProfile />
+      <HelloWorld />
+    </LiquidProvider>
+  );
+}
+
+function UserProfile() {
+  const { user, loading, error } = useLiquidUser();
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+function HelloWorld() {
+  const { message, loading, fetchHello } = useLiquidHello();
+
+  return (
+    <div>
+      <button onClick={fetchHello} disabled={loading}>
+        {loading ? "Loading..." : "Say Hello"}
+      </button>
+      {message && <p>{message}</p>}
+    </div>
+  );
+}
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+### Node.js SDK
+
+```typescript
+import { createLiquidNodeSDK } from "@liquid/node-sdk";
+
+async function main() {
+  const sdk = createLiquidNodeSDK({
+    apiKey: "your-api-key",
+    baseUrl: "https://api.liquid.com",
+  });
+
+  // Initialize for Node.js
+  await sdk.initializeForNode();
+
+  // Get user information
+  const user = await sdk.getUser();
+  console.log("User:", user.data);
+
+  // File operations
+  await sdk.writeFile("./output.txt", "Hello World!");
+  const content = await sdk.readFile("./output.txt");
+  console.log("File content:", content.data);
+}
 ```
 
-## Useful Links
+### React Native SDK
 
-Learn more about the power of Turborepo:
+```tsx
+import { LiquidRNProvider, useLiquidRNUser } from "@liquid/react-native-sdk";
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+function App() {
+  return (
+    <LiquidRNProvider config={{ apiKey: "your-api-key" }}>
+      <UserScreen />
+    </LiquidRNProvider>
+  );
+}
+
+function UserScreen() {
+  const { user, loading, error } = useLiquidRNUser();
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error}</Text>;
+
+  return (
+    <View>
+      <Text>{user.name}</Text>
+      <Text>{user.email}</Text>
+    </View>
+  );
+}
+```
+
+### Web SDK
+
+```typescript
+import { createLiquidWebSDK } from "@liquid/web-sdk";
+
+const sdk = createLiquidWebSDK({
+  apiKey: "your-api-key",
+});
+
+// Initialize for browser
+await sdk.initializeForBrowser();
+
+// Use localStorage
+sdk.setLocalStorageItem("token", "abc123");
+const token = sdk.getLocalStorageItem("token");
+
+// Get browser info
+const browserInfo = sdk.getBrowserInfo();
+console.log("Browser:", browserInfo.userAgent);
+```
+
+## 🏃‍♂️ Running Examples
+
+### React Example (Next.js + Tailwind)
+
+```bash
+cd apps/react-example
+npm run dev
+# Visit http://localhost:3000
+```
+
+### Node.js Example
+
+```bash
+cd apps/node-example
+npm run dev
+```
+
+### Build and Run React Example
+
+```bash
+# Build all packages first
+npm run build
+
+# Run React example
+cd apps/react-example
+npm run build
+npm start
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests for all packages
+npm test
+
+# Run tests for specific package
+npx turbo test --filter=@liquid/core
+```
+
+## 📝 Publishing
+
+```bash
+# Build and publish all packages
+npm run publish
+
+# Publish specific package
+cd packages/core
+npm publish
+```
+
+## 🔧 Development Workflow
+
+1. **Make changes** to any package in `packages/`
+2. **Build** with `npm run build` to ensure everything compiles
+3. **Test** your changes with the example apps
+4. **Lint** and **type-check** with `npm run lint` and `npm run check-types`
+5. **Commit** your changes
+
+## 🚀 Features
+
+- **🔄 Shared Core**: Common functionality across all SDKs
+- **🎯 Platform-specific**: Each SDK optimized for its environment
+- **📱 React Native**: Full Expo support with async storage
+- **🌐 Web**: Browser APIs and localStorage integration
+- **🖥️ Node.js**: File system and environment variable access
+- **⚡ Turbo Repo**: Fast, cached builds and parallel execution
+- **🎨 TypeScript**: Full type safety across all packages
+- **🧩 Modular**: Use only what you need
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests and ensure they pass
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details

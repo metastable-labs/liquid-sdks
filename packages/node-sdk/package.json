@@ -1,0 +1,26 @@
+{
+  "name": "@liquid/node-sdk",
+  "version": "1.0.0",
+  "description": "Liquid SDK for Node.js applications",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@liquid/core": "file:../core"
+  },
+  "devDependencies": {
+    "@liquid/eslint-config": "file:../eslint-config",
+    "@liquid/typescript-config": "file:../typescript-config",
+    "@types/node": "^18.0.0",
+    "typescript": "5.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

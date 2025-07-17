@@ -1,0 +1,36 @@
+{
+  "name": "@liquid/react-native-sdk",
+  "version": "1.0.0",
+  "description": "Liquid SDK for React Native and Expo applications",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@liquid/core": "file:../core",
+    "@react-native-async-storage/async-storage": "^1.19.0"
+  },
+  "devDependencies": {
+    "@liquid/eslint-config": "file:../eslint-config",
+    "@liquid/typescript-config": "file:../typescript-config",
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.72.0",
+    "expo": "~49.0.0",
+    "react": "^18.0.0",
+    "react-native": "^0.72.0",
+    "typescript": "5.8.3"
+  },
+  "peerDependencies": {
+    "expo": ">=49.0.0",
+    "react": ">=16.8.0",
+    "react-native": ">=0.70.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
