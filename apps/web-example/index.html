@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liquid Web SDK Example</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      h2 {
+        color: #555;
+        border-bottom: 2px solid #007aff;
+        padding-bottom: 5px;
+      }
+      button {
+        background-color: #007aff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .result {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+        border-left: 4px solid #007aff;
+      }
+      .success {
+        background-color: #d4edda;
+        border-left-color: #28a745;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        border-left-color: #dc3545;
+        color: #721c24;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+      .info-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+      }
+      .info-item strong {
+        color: #495057;
+      }
+      ul {
+        margin: 10px 0;
+        padding-left: 20px;
+      }
+      li {
+        margin: 5px 0;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Liquid Web SDK Example</h1>
+
+      <div class="container">
+        <h2>User Information</h2>
+        <div id="userInfo">
+          <p>Loading user information...</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <h2>SDK Actions</h2>
+        <button onclick="sayHello()">Say Hello</button>
+        <button onclick="getBrowserInfo()">Get Browser Info</button>
+        <button onclick="testLocalStorage()">Test Local Storage</button>
+        <button onclick="getConfig()">Get SDK Config</button>
+
+        <div id="actionResult"></div>
+      </div>
+
+      <div class="container">
+        <h2>About</h2>
+        <p>This example demonstrates the Liquid Web SDK with:</p>
+        <ul>
+          <li>JavaScript/TypeScript API</li>
+          <li>Browser-specific features</li>
+          <li>Local storage integration</li>
+          <li>Configuration management</li>
+          <li>Error handling</li>
+        </ul>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createLiquidWebSDK } from "./node_modules/@liquid/web-sdk/dist/index.js";
+
+      // Initialize SDK
+      const sdk = createLiquidWebSDK({
+        apiKey: "demo-web-api-key",
+        baseUrl: "https://api.liquid.com",
+        timeout: 5000,
+      });
+
+      // Initialize for browser
+      await sdk.initializeForBrowser();
+
+      // Load user information
+      async function loadUserInfo() {
+        try {
+          const userResponse = await sdk.getUser();
+          const userInfoDiv = document.getElementById("userInfo");
+
+          if (userResponse.success) {
+            const user = userResponse.data;
+            userInfoDiv.innerHTML = `
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>User ID:</strong> ${user.id}
+                            </div>
+                            <div class="info-item">
+                                <strong>Name:</strong> ${user.name}
+                            </div>
+                            <div class="info-item">
+                                <strong>Email:</strong> ${user.email}
+                            </div>
+                        </div>
+                    `;
+          } else {
+            userInfoDiv.innerHTML = `<div class="result error">Error: ${userResponse.error}</div>`;
+          }
+        } catch (error) {
+          document.getElementById("userInfo").innerHTML =
+            `<div class="result error">Error loading user: ${error.message}</div>`;
+        }
+      }
+
+      // Say Hello
+      window.sayHello = async function () {
+        const resultDiv = document.getElementById("actionResult");
+        try {
+          const response = await sdk.sayHello();
+          if (response.success) {
+            resultDiv.innerHTML = `<div class="result success">🎉 ${response.data}</div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="result error">Error: ${response.error}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">Error: ${error.message}</div>`;
+        }
+      };
+
+      // Get Browser Info
+      window.getBrowserInfo = function () {
+        const resultDiv = document.getElementById("actionResult");
+        try {
+          const info = sdk.getBrowserInfo();
+          resultDiv.innerHTML = `
+                    <div class="result">
+                        <strong>Browser Information:</strong>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>User Agent:</strong> ${info.userAgent}
+                            </div>
+                            <div class="info-item">
+                                <strong>Platform:</strong> ${info.platform}
+                            </div>
+                        </div>
+                    </div>
+                `;
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">Error: ${error.message}</div>`;
+        }
+      };
+
+      // Test Local Storage
+      window.testLocalStorage = function () {
+        const resultDiv = document.getElementById("actionResult");
+        try {
+          const testKey = "liquid_test_key";
+          const testValue = "Hello from Liquid Web SDK!";
+
+          // Set value
+          sdk.setLocalStorageItem(testKey, testValue);
+
+          // Get value
+          const retrievedValue = sdk.getLocalStorageItem(testKey);
+
+          resultDiv.innerHTML = `
+                    <div class="result success">
+                        <strong>Local Storage Test:</strong><br>
+                        Stored: "${testValue}"<br>
+                        Retrieved: "${retrievedValue}"<br>
+                        ${retrievedValue === testValue ? "✅ Success!" : "❌ Failed!"}
+                    </div>
+                `;
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">Error: ${error.message}</div>`;
+        }
+      };
+
+      // Get SDK Config
+      window.getConfig = function () {
+        const resultDiv = document.getElementById("actionResult");
+        try {
+          const config = sdk.getConfig();
+          resultDiv.innerHTML = `
+                    <div class="result">
+                        <strong>SDK Configuration:</strong>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>API Key:</strong> ${config.apiKey.substring(0, 8)}...
+                            </div>
+                            <div class="info-item">
+                                <strong>Base URL:</strong> ${config.baseUrl}
+                            </div>
+                            <div class="info-item">
+                                <strong>Timeout:</strong> ${config.timeout}ms
+                            </div>
+                        </div>
+                    </div>
+                `;
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">Error: ${error.message}</div>`;
+        }
+      };
+
+      // Load user info on page load
+      loadUserInfo();
+    </script>
+  </body>
+</html>

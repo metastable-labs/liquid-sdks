@@ -1,0 +1,18 @@
+{
+  "name": "web-example",
+  "version": "1.0.0",
+  "description": "Example web app using Liquid Web SDK",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "build": "echo 'Web example is static HTML - no build needed'",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@liquid/web-sdk": "file:../../packages/web-sdk"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  },
+  "private": true
+}
