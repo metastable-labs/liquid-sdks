@@ -1,5 +1,5 @@
 {
-  "name": "sdks",
+  "name": "liquid-sdks",
   "private": true,
   "scripts": {
     "build": "turbo run build",
