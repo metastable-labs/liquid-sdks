@@ -15,8 +15,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "noEmit": false
+    "noEmit": false,
+    "types": ["react", "react-dom"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*react-native*",
+    "node_modules/@types/react-native/**/*"
+  ]
 }

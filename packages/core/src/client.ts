@@ -1,32 +1,20 @@
-import { LiquidConfig, LiquidResponse, LiquidUser } from "./types";
+import { LiquidConfig } from "./types";
 
 export class LiquidClient {
   private config: LiquidConfig;
 
   constructor(config: LiquidConfig) {
+    // Validate required config
+    if (!config.appId) {
+      throw new Error("LiquidClient: appId is required in config");
+    }
+
+    // Set defaults
     this.config = {
-      baseUrl: "https://api.liquid.com",
-      timeout: 10000,
+      modalStyle: "halfBottomSheet",
+      chains: ["solana"],
+      mode: "light",
       ...config,
-    };
-  }
-
-  async getUser(): Promise<LiquidResponse<LiquidUser>> {
-    // Hello World implementation
-    return {
-      data: {
-        id: "1",
-        email: "hello@liquid.com",
-        name: "Hello World User",
-      },
-      success: true,
-    };
-  }
-
-  async sayHello(): Promise<LiquidResponse<string>> {
-    return {
-      data: "Hello from Liquid Core!",
-      success: true,
     };
   }
 

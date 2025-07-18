@@ -1,68 +1,19 @@
-import { promises as fs } from "fs";
-import { LiquidClient, LiquidConfig, LiquidResponse } from "@liquid/core";
+import { LiquidClient, LiquidConfig, AskLiquidParams } from "@liquid/core";
 
 export class LiquidNodeSDK extends LiquidClient {
   constructor(config: LiquidConfig) {
     super(config);
   }
 
-  async initializeForNode(): Promise<LiquidResponse<string>> {
-    // Node.js specific initialization
-    return {
-      data: `Liquid Node SDK initialized on Node.js ${process.version}!`,
-      success: true,
-    };
+  askLiquid(params: AskLiquidParams): void {
+    console.log(`[Liquid Node] askLiquid called with params:`, params);
+    // TODO: Implement server-side modal handling or API calls
+    console.log(`[Liquid Node] Config:`, this.getConfig());
   }
 
-  async writeFile(
-    filePath: string,
-    data: string
-  ): Promise<LiquidResponse<string>> {
-    try {
-      await fs.writeFile(filePath, data, "utf8");
-      return {
-        data: `File written successfully to ${filePath}`,
-        success: true,
-      };
-    } catch (error) {
-      return {
-        data: "",
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  async readFile(filePath: string): Promise<LiquidResponse<string>> {
-    try {
-      const data = await fs.readFile(filePath, "utf8");
-      return {
-        data,
-        success: true,
-      };
-    } catch (error) {
-      return {
-        data: "",
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  async ensureDirectory(dirPath: string): Promise<LiquidResponse<string>> {
-    try {
-      await fs.mkdir(dirPath, { recursive: true });
-      return {
-        data: `Directory ensured: ${dirPath}`,
-        success: true,
-      };
-    } catch (error) {
-      return {
-        data: "",
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
+  closeLiquid(): void {
+    console.log(`[Liquid Node] closeLiquid called`);
+    // TODO: Implement server-side modal cleanup
   }
 
   getNodeInfo(): { version: string; platform: string; arch: string } {

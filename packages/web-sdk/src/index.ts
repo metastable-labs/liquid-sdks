@@ -1,29 +1,28 @@
-import { LiquidClient, LiquidConfig, LiquidResponse } from "@liquid/core";
+import { LiquidClient, LiquidConfig, AskLiquidParams } from "@liquid/core";
 
 export class LiquidWebSDK extends LiquidClient {
+  private isModalOpen: boolean = false;
+
   constructor(config: LiquidConfig) {
     super(config);
   }
 
-  async initializeForBrowser(): Promise<LiquidResponse<string>> {
-    // Browser-specific initialization
-    return {
-      data: "Liquid Web SDK initialized for browser!",
-      success: true,
-    };
+  askLiquid(params: AskLiquidParams): void {
+    console.log(`[Liquid Web] Opening modal with params:`, params);
+    this.isModalOpen = true;
+    // TODO: Implement web modal rendering
+    // This could create and append a modal element to the DOM
   }
 
-  getLocalStorageItem(key: string): string | null {
-    if (typeof window !== "undefined" && window.localStorage) {
-      return window.localStorage.getItem(key);
-    }
-    return null;
+  closeLiquid(): void {
+    console.log(`[Liquid Web] Closing modal`);
+    this.isModalOpen = false;
+    // TODO: Implement web modal cleanup
+    // This could remove the modal element from the DOM
   }
 
-  setLocalStorageItem(key: string, value: string): void {
-    if (typeof window !== "undefined" && window.localStorage) {
-      window.localStorage.setItem(key, value);
-    }
+  isOpen(): boolean {
+    return this.isModalOpen;
   }
 
   getBrowserInfo(): { userAgent: string; platform: string } {

@@ -2,54 +2,38 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 import { Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   LiquidClient,
   LiquidConfig,
-  LiquidResponse,
-  LiquidUser,
+  AskLiquidParams,
+  UseLiquidReturn,
 } from "@liquid/core";
 
 export class LiquidReactNativeSDK extends LiquidClient {
+  private isModalOpen: boolean = false;
+
   constructor(config: LiquidConfig) {
     super(config);
   }
 
-  async initializeForReactNative(): Promise<LiquidResponse<string>> {
-    // React Native specific initialization
-    return {
-      data: `Liquid React Native SDK initialized on ${Platform.OS}!`,
-      success: true,
-    };
+  askLiquid(params: AskLiquidParams): void {
+    console.log(`[Liquid RN] Opening modal with params:`, params);
+    this.isModalOpen = true;
+    // TODO: Implement native modal presentation
   }
 
-  async getStorageItem(key: string): Promise<string | null> {
-    try {
-      return await AsyncStorage.getItem(key);
-    } catch (error) {
-      console.error("Error getting storage item:", error);
-      return null;
-    }
+  closeLiquid(): void {
+    console.log(`[Liquid RN] Closing modal`);
+    this.isModalOpen = false;
+    // TODO: Implement native modal dismissal
   }
 
-  async setStorageItem(key: string, value: string): Promise<void> {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.error("Error setting storage item:", error);
-    }
-  }
-
-  async removeStorageItem(key: string): Promise<void> {
-    try {
-      await AsyncStorage.removeItem(key);
-    } catch (error) {
-      console.error("Error removing storage item:", error);
-    }
+  isOpen(): boolean {
+    return this.isModalOpen;
   }
 
   getPlatformInfo(): { os: string; version: string } {
@@ -61,7 +45,14 @@ export class LiquidReactNativeSDK extends LiquidClient {
 }
 
 // Context for the SDK
-const LiquidRNContext = createContext<LiquidReactNativeSDK | null>(null);
+interface LiquidRNContextValue {
+  sdk: LiquidReactNativeSDK;
+  isOpen: boolean;
+  askLiquid: (params: AskLiquidParams) => void;
+  closeLiquid: () => void;
+}
+
+const LiquidRNContext = createContext<LiquidRNContextValue | null>(null);
 
 // Provider component
 interface LiquidRNProviderProps {
@@ -74,55 +65,47 @@ export const LiquidRNProvider: React.FC<LiquidRNProviderProps> = ({
   children,
 }) => {
   const [sdk] = useState(() => new LiquidReactNativeSDK(config));
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    sdk.initializeForReactNative();
+  const askLiquid = useCallback(
+    (params: AskLiquidParams) => {
+      sdk.askLiquid(params);
+      setIsOpen(true);
+    },
+    [sdk]
+  );
+
+  const closeLiquid = useCallback(() => {
+    sdk.closeLiquid();
+    setIsOpen(false);
   }, [sdk]);
+
+  const contextValue: LiquidRNContextValue = {
+    sdk,
+    isOpen,
+    askLiquid,
+    closeLiquid,
+  };
 
   return React.createElement(
     LiquidRNContext.Provider,
-    { value: sdk },
+    { value: contextValue },
     children
   );
 };
 
-// Hook to use the SDK
-export const useLiquidRN = (): LiquidReactNativeSDK => {
-  const sdk = useContext(LiquidRNContext);
-  if (!sdk) {
+// Hook to use the SDK - matches React SDK API
+export const useLiquidRN = (): UseLiquidReturn => {
+  const context = useContext(LiquidRNContext);
+  if (!context) {
     throw new Error("useLiquidRN must be used within a LiquidRNProvider");
   }
-  return sdk;
-};
 
-// Hook for user data
-export const useLiquidRNUser = () => {
-  const sdk = useLiquidRN();
-  const [user, setUser] = useState<LiquidUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const response = await sdk.getUser();
-        if (response.success) {
-          setUser(response.data);
-        } else {
-          setError(response.error || "Failed to fetch user");
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [sdk]);
-
-  return { user, loading, error };
+  return {
+    askLiquid: context.askLiquid,
+    closeLiquid: context.closeLiquid,
+    isOpen: context.isOpen,
+  };
 };
 
 // Export everything from core

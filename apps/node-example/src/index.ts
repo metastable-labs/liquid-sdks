@@ -1,77 +1,62 @@
-import { createLiquidNodeSDK } from "@liquid/node-sdk";
+import { LiquidNodeSDK } from "@liquid/node-sdk";
 
-async function main() {
-  console.log("🚀 Starting Liquid Node SDK Example...\n");
-
-  // Initialize the SDK
-  const sdk = createLiquidNodeSDK({
-    apiKey: "demo-node-api-key",
-    baseUrl: "https://api.liquid.com",
-    timeout: 5000,
-  });
+async function runNodeExample() {
+  console.log("🚀 Liquid Node SDK Example");
+  console.log("=".repeat(40));
 
   try {
-    // Initialize for Node.js
-    const initResult = await sdk.initializeForNode();
-    console.log("✅ Initialization:", initResult.data);
+    // Initialize the SDK with required appId
+    const sdk = new LiquidNodeSDK({
+      appId: "demo-node-app",
+      modalStyle: "modal",
+      chains: ["solana", "base"],
+      mode: "light",
+    });
 
-    // Get node information
+    console.log("✅ SDK initialized successfully!");
+
+    // Demonstrate askLiquid functionality
+    console.log("\n📞 Calling askLiquid...");
+    sdk.askLiquid({
+      userWalletAddresses: ["0x1234567890123456789012345678901234567890"],
+      chains: ["solana", "base"],
+      modalStyle: "fullBottomSheet",
+    });
+
+    // Demonstrate closeLiquid functionality
+    console.log("\n🔒 Calling closeLiquid...");
+    sdk.closeLiquid();
+
+    // Show Node.js specific information
+    console.log("\n🖥️  Node.js Environment Info:");
     const nodeInfo = sdk.getNodeInfo();
-    console.log("📊 Node Information:");
-    console.log(`   - Version: ${nodeInfo.version}`);
+    console.log(`   - Node Version: ${nodeInfo.version}`);
     console.log(`   - Platform: ${nodeInfo.platform}`);
     console.log(`   - Architecture: ${nodeInfo.arch}`);
 
-    // Say hello
-    const helloResult = await sdk.sayHello();
-    console.log("\n👋 Hello:", helloResult.data);
-
-    // Get user information
-    const userResult = await sdk.getUser();
-    if (userResult.success) {
-      console.log("\n👤 User Information:");
-      console.log(`   - ID: ${userResult.data.id}`);
-      console.log(`   - Name: ${userResult.data.name}`);
-      console.log(`   - Email: ${userResult.data.email}`);
-    }
-
-    // Demonstrate file operations
-    const testDir = "./temp-demo";
-    const testFile = `${testDir}/demo.txt`;
-
-    // Ensure directory exists
-    const dirResult = await sdk.ensureDirectory(testDir);
-    console.log("\n📁 Directory:", dirResult.data);
-
-    // Write a file
-    const writeResult = await sdk.writeFile(
-      testFile,
-      "Hello from Liquid Node SDK!"
-    );
-    console.log("✏️  Write:", writeResult.data);
-
-    // Read the file back
-    const readResult = await sdk.readFile(testFile);
-    if (readResult.success) {
-      console.log("📄 Read:", readResult.data);
-    }
-
-    // Check environment variable
-    const envVar = sdk.getEnvironmentVariable("NODE_ENV");
-    console.log(`\n🌍 Environment: ${envVar || "not set"}`);
+    // Show environment variables (demo only)
+    console.log("\n🌍 Environment Variables:");
+    const nodeEnv = sdk.getEnvironmentVariable("NODE_ENV") || "not set";
+    const path = sdk.getEnvironmentVariable("PATH")
+      ? "available"
+      : "not available";
+    console.log(`   - NODE_ENV: ${nodeEnv}`);
+    console.log(`   - PATH: ${path}`);
 
     // Show SDK configuration
-    const config = sdk.getConfig();
     console.log("\n⚙️  SDK Configuration:");
-    console.log(`   - API Key: ${config.apiKey.substring(0, 8)}...`);
-    console.log(`   - Base URL: ${config.baseUrl}`);
-    console.log(`   - Timeout: ${config.timeout}ms`);
+    const config = sdk.getConfig();
+    console.log(`   - App ID: ${config.appId}`);
+    console.log(`   - Modal Style: ${config.modalStyle}`);
+    console.log(`   - Chains: ${config.chains?.join(", ")}`);
+    console.log(`   - Mode: ${config.mode}`);
 
-    console.log("\n🎉 Node SDK Example completed successfully!");
+    console.log("\n🎉 Node SDK example completed successfully!");
   } catch (error) {
-    console.error("❌ Error:", error);
+    console.error("\n❌ Error running Node SDK example:", error);
     process.exit(1);
   }
 }
 
-main().catch(console.error);
+// Run the example
+runNodeExample();

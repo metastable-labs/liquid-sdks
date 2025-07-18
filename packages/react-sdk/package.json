@@ -6,24 +6,26 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/components/*.css dist/components/",
     "dev": "tsc --watch",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@liquid/core": "file:../core",
-    "@liquid/web-sdk": "file:../web-sdk"
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@liquid/eslint-config": "file:../eslint-config",
     "@liquid/typescript-config": "file:../typescript-config",
     "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "react": "^18.0.0",
     "typescript": "5.8.3"
   },
   "peerDependencies": {
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "publishConfig": {
     "access": "public"

@@ -12,8 +12,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@liquid/core": "file:../core",
-    "@react-native-async-storage/async-storage": "^1.19.0"
+    "@liquid/core": "file:../core"
   },
   "devDependencies": {
     "@liquid/eslint-config": "file:../eslint-config",
